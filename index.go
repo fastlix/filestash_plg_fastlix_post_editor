@@ -1,4 +1,4 @@
-package main
+package plg_fastlix_post_editor
 
 import (
 	"database/sql"
