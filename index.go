@@ -1,4 +1,4 @@
-package plg_backend_mysql
+package plg_fastlix_post_editor
 
 import (
 	"database/sql"
