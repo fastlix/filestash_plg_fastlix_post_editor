@@ -16,16 +16,16 @@ import (
 	. "github.com/mickael-kerjean/filestash/server/common"
 )
 
-type Mysql struct {
+type PostEditor struct {
 	params map[string]string
 	db     *sql.DB
 }
 
 func init() {
-	Backend.Register("mysql", Mysql{})
+	Backend.Register("post_editor", PostEditor{})
 }
 
-func (this Mysql) Init(params map[string]string, app *App) (IBackend, error) {
+func (this PostEditor) Init(params map[string]string, app *App) (IBackend, error) {
 	if params["host"] == "" {
 		params["host"] = "127.0.0.1"
 	}
@@ -46,13 +46,13 @@ func (this Mysql) Init(params map[string]string, app *App) (IBackend, error) {
 	if err != nil {
 		return nil, err
 	}
-	return Mysql{
+	return PostEditor{
 		params: params,
 		db:     db,
 	}, nil
 }
 
-func (this Mysql) LoginForm() Form {
+func (this PostEditor) LoginForm() Form {
 	return Form{
 		Elmnts: []FormElement{
 			FormElement{
@@ -84,7 +84,7 @@ func (this Mysql) LoginForm() Form {
 	}
 }
 
-func (this Mysql) Ls(path string) ([]os.FileInfo, error) {
+func (this PostEditor) Ls(path string) ([]os.FileInfo, error) {
 	defer this.db.Close()
 	location, err := NewDBLocation(path)
 	if err != nil {
@@ -253,7 +253,7 @@ func (this Mysql) Ls(path string) ([]os.FileInfo, error) {
 	return nil, ErrNotValid
 }
 
-func (this Mysql) Cat(path string) (io.ReadCloser, error) {
+func (this PostEditor) Cat(path string) (io.ReadCloser, error) {
 	defer this.db.Close()
 	location, err := NewDBLocation(path)
 	if err != nil {
@@ -429,7 +429,7 @@ func (this Mysql) Cat(path string) (io.ReadCloser, error) {
 	return NewReadCloserFromBytes(b), nil
 }
 
-func (this Mysql) Mkdir(path string) error {
+func (this PostEditor) Mkdir(path string) error {
 	defer this.db.Close()
 	location, err := NewDBLocation(path)
 	if err != nil {
@@ -443,7 +443,7 @@ func (this Mysql) Mkdir(path string) error {
 	return ErrNotAllowed
 }
 
-func (this Mysql) Rm(path string) error {
+func (this PostEditor) Rm(path string) error {
 	defer this.db.Close()
 	location, err := NewDBLocation(path)
 	if err != nil {
@@ -473,12 +473,12 @@ func (this Mysql) Rm(path string) error {
 	return err
 }
 
-func (this Mysql) Mv(from string, to string) error {
+func (this PostEditor) Mv(from string, to string) error {
 	defer this.db.Close()
 	return ErrNotValid
 }
 
-func (this Mysql) Touch(path string) error {
+func (this PostEditor) Touch(path string) error {
 	defer this.db.Close()
 	location, err := NewDBLocation(path)
 	if err != nil {
@@ -542,7 +542,7 @@ type SqlKeyParams struct {
 	Value interface{}
 }
 
-func (this Mysql) Save(path string, file io.Reader) error {
+func (this PostEditor) Save(path string, file io.Reader) error {
 	defer this.db.Close()
 	location, err := NewDBLocation(path)
 	if err != nil {
@@ -589,7 +589,7 @@ func (this Mysql) Save(path string, file io.Reader) error {
 	return nil
 }
 
-func (this Mysql) Meta(path string) Metadata {
+func (this PostEditor) Meta(path string) Metadata {
 	location, _ := NewDBLocation(path)
 	return Metadata{
 		CanCreateDirectory: func(l DBLocation) *bool {
@@ -876,7 +876,7 @@ func FindQuerySelection(db *sql.DB, location DBLocation) (SqlFields, error) {
 	return fields, nil
 }
 
-func (this Mysql) Close() error {
+func (this PostEditor) Close() error {
 	return this.db.Close()
 }
 
